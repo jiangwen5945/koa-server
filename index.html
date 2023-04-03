@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="connect" onclick="handleConnect()">连接</button>
+  <button id="send" onclick="handleSend()">发送数据</button>
+
+  <p>接收的服务端数据：</p>
+  <span id="content"></span>
+</body>
+<script>
+  const connect = document.getElementById('connect')
+  const send = document.getElementById('send')
+
+  let ws = null
+  const handleConnect = () => {
+    console.log('请求连接');
+    ws = new WebSocket('ws://localhost:9998')
+    ws.onopen = () => {
+      console.log('连接服务器成功');
+    }
+    ws.onclose = () => {
+      console.log('连接服务器失败');
+    }
+    ws.onmessage = msg => {
+      console.log('接受客户端的数据：', msg);
+      document.getElementById('content').innerHTML = msg.data
+    }
+  }
+  const handleSend = () => {
+    console.log('发送数据')
+    ws.send(JSON.stringify({
+      action: 'getData',
+      socketType: 'trendData',
+      chartName: 'trend',
+      value: true
+    }))
+  }
+</script>
+
+</html>
